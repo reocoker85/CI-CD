@@ -40,12 +40,22 @@
 
 ### Решение
 
-Cхемы workflow [Bug](./xml/Bug.xml)  [Other](./xml/Other.xml)
+Cхемы workflow в xml:
+- [Bug](./xml/Bug.xml)
+- [Other](./xml/Other.xml)
+
+Скриншоты workflow:
 
 ![1.png](./img/1.png)
 ![2.png](./img/2.png)
+
+Прогон задач по доске kanban:
+
 ![3.png](./img/3.png)
 ![4.png](./img/4.png)
 ![5.png](./img/5.png)
 ![6.png](./img/6.png)
+
+Результаты спринта в scrum:
+
 ![7.png](./img/7.png)
