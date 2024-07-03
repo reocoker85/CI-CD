@@ -1,0 +1,41 @@
+#cloud-config
+users:
+  - name: user
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+write_files:
+  - path: /etc/yum.repos.d/CentOS-Base.repo
+    content: |
+      [base]
+      name=CentOS-$releasever - Base
+      baseurl=http://vault.centos.org/7.9.2009/os/$basearch/
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+      [updates]
+      name=CentOS-$releasever - Updates
+      baseurl=http://vault.centos.org/7.9.2009/updates/$basearch/
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+      [extras]
+      name=CentOS-$releasever - Extras
+      baseurl=http://vault.centos.org/7.9.2009/extras/$basearch/
+      gpgcheck=1
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+      [centosplus]
+      name=CentOS-$releasever - Plus
+      baseurl=http://vault.centos.org/7.9.2009/centosplus/$basearch/
+      gpgcheck=1
+      enabled=0
+      gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+    owner: 'root:root'
+    permissions: '0644'
+
+package_update: true
+
