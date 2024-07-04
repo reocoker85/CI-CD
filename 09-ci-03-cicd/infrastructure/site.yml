@@ -2,6 +2,14 @@
 - name: Get OpenJDK installed
   hosts: sonarqube
   pre_tasks:
+    - name: Change repo file
+      copy:
+        src: CentOS-Base.repo
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+        mode: 0644
+        owner: root
+        group: root
+        
     - name: install unzip
       become: true
       yum:
@@ -45,14 +53,6 @@
   hosts: postgres
   become: true
   tasks:
-    - name: Change repo file
-      copy:
-        src: CentOS-Base.repo
-        dest: /etc/yum.repos.d/CentOS-Base.repo
-        mode: 0644
-        owner: root
-        group: root
-
     - name: Install PostgreSQL repos
       yum:
         name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -65,7 +65,7 @@
         state: present
 
     - name: Init template1 DB
-      command: /usr/pgsql-11/bin/postgresql-11-setup initdb
+      command: /usr/pgsql-12/bin/postgresql-12-setup initdb
       failed_when: false
 
     - name: Start pgsql service
@@ -94,7 +94,7 @@
     - name: Copy pg_hba.conf
       copy:
         src: pg_hba.conf
-        dest: /var/lib/pgsql/11/data/pg_hba.conf
+        dest: /var/lib/pgsql/12/data/pg_hba.conf
         mode: 0600
         owner: postgres
         group: postgres
