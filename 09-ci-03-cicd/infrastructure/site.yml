@@ -14,7 +14,7 @@
       become: true
       yum:
         name: unzip
-        state: present
+        state: latest
   tasks:
     - name: Upload .tar.gz file conaining binaries from remote storage
       get_url:
@@ -225,6 +225,13 @@
 - name: Get Nexus installed
   hosts: nexus
   pre_tasks:
+    - name: Change repo file
+      copy:
+        src: CentOS-Base.repo
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+        mode: 0644
+        owner: root
+        group: root
     - name: Create Nexus group
       become: true
       group:
@@ -238,7 +245,7 @@
       become: true
       package:
         name: [java-1.8.0-openjdk, java-1.8.0-openjdk-devel]
-        state: present
+        state: latest
   tasks:
     - name: Create Nexus directories
       become: true
