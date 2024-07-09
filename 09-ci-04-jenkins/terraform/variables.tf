@@ -38,7 +38,7 @@ variable "vpc_name" {
 ###vm-count vars
 variable "family" {
   type        = string
-  default     = "fedora-37"
+  default     = "ubuntu-2204-lts"
   description = "OS"
 }
 

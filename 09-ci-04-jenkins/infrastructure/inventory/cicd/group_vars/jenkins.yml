@@ -4,5 +4,5 @@ user_name: "{{ jenkins_user_name }}"
 jenkins_user_name: jenkins
 jenkins_user_group: jenkins
 java_packages:
-  - java-latest-openjdk-devel.x86_64
+  - openjdk-17-jdk
 jenkins_agent_dir: /opt/jenkins_agent/
