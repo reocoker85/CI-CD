@@ -33,7 +33,7 @@
 ![3.png](./img/3.png)
 ![4.png](./img/4.png)
 
-3. [`Jenkinsfile`](https://github.com/reocoker85/workfiles/blob/main/Jenkinsfile)
+3.Репозиторий с файлом [`Jenkinsfile`](https://github.com/reocoker85/workfiles/blob/main/Jenkinsfile)
 
 4.Multibranch Pipeline
 
