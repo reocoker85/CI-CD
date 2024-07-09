@@ -11,7 +11,7 @@ data "template_file" "inventory" {
 
 resource "null_resource" "update_inventory" {
   provisioner "local-exec" {
-        command = "echo '${data.template_file.inventory.rendered}' > /home/reocoker/cicd/mnt-homeworks/09-ci-04-jenkins/infrastructure/inventory/cicd/hosts.yml"
+        command = "echo '${data.template_file.inventory.rendered}' > /home/vagrant/git/09-ci-04-jenkins/infrastructure/inventory/cicd/hosts.yml"
     }
 
     triggers = {
@@ -23,7 +23,7 @@ resource "null_resource" "update_inventory" {
 resource "null_resource" "ansible" {
   depends_on = [ null_resource.update_inventory ]
   provisioner "local-exec" {
-    command = "cat ~/.ssh/id_rsa | ssh-add -"
+    command = "eval $(ssh-agent) && cat ~/.ssh/id_rsa | ssh-add -"
   }
 
   provisioner "local-exec" {
@@ -31,10 +31,7 @@ resource "null_resource" "ansible" {
   }
 
   provisioner "local-exec" {
-    command     = "export ANSIBLE_CONFIG=/home/reocoker/cicd/mnt-homeworks/09-ci-04-jenkins/infrastructure/ansible.cfg; ansible-playbook -i /home/reocoker/cicd/mnt-homeworks/09-ci-04-jenkins/infrastructure/inventory/cicd/hosts.yml /home/reocoker/cicd/mnt-homeworks/09-ci-04-jenkins/infrastructure/site.yml"
-    on_failure  = continue 
-    environment = { ANSIBLE_HOST_KEY_CHECKING = "False" }
+    command     = "export ANSIBLE_CONFIG=/home/vagrant/git/09-ci-04-jenkins/infrastructure/ansible.cfg; ansible-playbook -i /home/vagrant/git/09-ci-04-jenkins/infrastructure/inventory/cicd/hosts.yml /home/vagrant/git/09-ci-04-jenkins/infrastructure/site.yml"
+    on_failure  = continue  
   }
-
-
 }
