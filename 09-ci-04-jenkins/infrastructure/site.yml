@@ -57,15 +57,6 @@
         name: jenkins
         enabled: true
 
-    - name: Ensure jenkins agents are present in known_hosts file
-      become_user: "{{ jenkins_user_name }}"
-      ansible.builtin.known_hosts:
-        name: "{{ hostvars[item].ansible_host }}"
-        state: present
-        key: "{{ lookup('pipe', 'ssh-keyscan {{ hostvars[item].ansible_host }}') }}"
-        hash_host: true
-      with_items: "{{ groups.jenkins_agents }}"
-
 - name: Install docker and pip for jenkins agent
   hosts: jenkins_agents
   become: true
@@ -121,17 +112,6 @@
       ansible.builtin.meta:
         reset_connection
 
-- name: Prepare jenkins agent ssh
-  hosts: jenkins_agents
-  become: true
-  become_user: "{{ jenkins_user_name }}"
-  tasks:
-    - name: Add master publickey into authorized_key
-      ansible.posix.authorized_key:
-        user: "{{ jenkins_user_name }}"
-        state: present
-        key: "{{ hostvars['jenkins-master-01']['ssh_key_info']['ssh_public_key'] }}"
-
 - name: Install python packages
   hosts: jenkins_agents
   become_user: "{{ jenkins_user_name }}"
@@ -149,12 +129,3 @@
         regexp: export PATH=$PATH:/home/jenkins/.local/bin
         line: export PATH=$PATH:/home/jenkins/.local/bin
 
-    - name: Install agent.jar
-      ansible.builtin.get_url:
-        url: "http://{{ hostvars['jenkins-master-01']['ansible_host'] }}:8080/jnlpJars/agent.jar"
-        dest: "{{ jenkins_agent_dir }}"
-        mode: "0777"
-      register: install_agent
-      until: install_agent is succeeded
-      retries: 10
-      timeout: 10
