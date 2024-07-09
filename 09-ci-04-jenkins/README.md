@@ -8,7 +8,7 @@
 4. Сделать первоначальную настройку.
 
 ## Решение 
-Инфраструктуру разворачиваем через [Terraform](./terraform) , [Playbook](./infrastructure/site.yml) переделал под Ubuntu 22.04.
+Развертывание инфраструктуры , запись хостов и прогон playbook  делаем с помощью [Terraform](./terraform) . [Playbook](./infrastructure/site.yml) переделал под Ubuntu 22.04.
 
 ## Основная часть
 
@@ -23,7 +23,27 @@
 9. Сопроводите процесс настройки скриншотами для каждого пункта задания!!
 
 ## Решение
-1. Freestyle Job !
-2. Declarative Pipeline Job
+1. Freestyle Job
+
+![1.png](./img/1.png)
+![2.png](./img/2.png)
+
+2.Declarative Pipeline Job
+
+![3.png](./img/3.png)
+![4.png](./img/4.png)
+
+3. [`Jenkinsfile`](https://github.com/reocoker85/workfiles/blob/main/Jenkinsfile)
+
+4.Multibranch Pipeline
+
+![5.png](./img/5.png)
+![6.png](./img/6.png)
+
+5.Scripted Pipeline  [`ScriptedJenkinsfile`](https://github.com/reocoker85/workfiles/blob/main/ScriptedJenkinsfile)
+
+![5.png](./img/7.png)
+![6.png](./img/8.png)
+
 
 
