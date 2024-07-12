@@ -46,15 +46,15 @@ variable "family" {
 
 ###for_each
 variable "each_vm" {
-  type = list(object({  vm_name     = string,
-                        hostname    = string 
-                        platform    = string, 
-                        cores       = number, 
-                        memory      = number, 
-                        core_fr     = number,
-                        disk_size   = number, 
-                        preemptible = bool, 
-                        nat         = bool }))
+  type = list(object({ vm_name = string,
+    hostname    = string
+    platform    = string,
+    cores       = number,
+    memory      = number,
+    core_fr     = number,
+    disk_size   = number,
+    preemptible = bool,
+  nat = bool }))
   default = [
     {
       vm_name     = "jenkins-master-01"
@@ -63,7 +63,7 @@ variable "each_vm" {
       cores       = 4
       memory      = 6
       core_fr     = 20
-      disk_size   = 10 
+      disk_size   = 10
       preemptible = true
       nat         = true
     },
