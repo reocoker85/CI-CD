@@ -78,9 +78,9 @@ resource "yandex_compute_instance" "runner" {
   }
   provisioner "remote-exec" {
     inline = [
-      "chmod +x ~/runner_sonar_start.sh",
+      "chmod +x ~/start.sh",
       "cd ~",
-      "~/runner_sonar_start.sh"
+      "~/start.sh"
     ]
   }
   connection {
