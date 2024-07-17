@@ -27,6 +27,64 @@
 6. Точка вызова: запуск скрипта.
 7. При комите в любую ветку должен собираться docker image с форматом имени hello:gitlab-$CI_COMMIT_SHORT_SHA . Образ должен быть выложен в Gitlab registry или yandex registry.   
 
+### Решение
+
+Dockerfile:
+```dockerfile
+FROM centos:7
+COPY CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+WORKDIR /python_api
+RUN yum -y update && yum install -y wget curl gcc make zlib-devel libffi-devel
+RUN wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz && tar xzf Python-3.7.2.tgz
+RUN cd Python-3.7.2 && ./configure --enable-optimizations && make altinstall
+RUN echo 'alias python3.7="python3"' >> ~/.bashrc
+RUN yum -y install python3-pip
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+COPY python-api.py python-api.py
+CMD ["python3", "python-api.py"]
+```
+Pipeline:
+```yaml
+image: docker:git
+services:
+- docker:dind
+
+stages:
+- build
+- test
+- deploy
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/reocoker1985/restful-api/hello:gitlab-$CI_COMMIT_SHORT_SHA
+  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/reocoker1985/restful-api/python-api:latest
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+build:
+  stage: build
+  tags:
+    - linux
+  script:
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+deploy:
+  stage: deploy
+  tags:
+    - linux
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - main
+```
+![1.png](./img/1.png)
+![2.png](./img/2.png)
+![3.png](./img/3.png)
+
 ### Product Owner
 
 Вашему проекту нужна бизнесовая доработка: нужно поменять JSON ответа на вызов метода GET `/rest/api/get_info`, необходимо создать Issue в котором указать:
@@ -51,30 +109,5 @@
 1. Поднять докер-контейнер с образом `python-api:latest` и проверить возврат метода на корректность.
 2. Закрыть Issue с комментарием об успешности прохождения, указав желаемый результат и фактически достигнутый.
 
-## Итог
 
-В качестве ответа пришлите подробные скриншоты по каждому пункту задания:
 
-- файл gitlab-ci.yml;
-- Dockerfile; 
-- лог успешного выполнения пайплайна;
-- решённый Issue.
-
-### Важно 
-После выполнения задания выключите и удалите все задействованные ресурсы в Yandex Cloud.
-
-```
-FROM centos:7
-COPY CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
-WORKDIR /python_api
-RUN yum -y update && yum install -y wget gcc make zlib-devel libffi-devel
-RUN wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz && tar xzf Python-3.7.2.tgz
-RUN cd Python-3.7.2 && ./configure --enable-optimizations && make altinstall
-RUN echo 'alias python3.7="python3"' >> ~/.bashrc
-RUN yum -y install python3-pip
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-COPY python-api.py python-api.py
-CMD ["python3", "python-api.py"]
-
-```
