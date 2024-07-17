@@ -11,3 +11,39 @@ build:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
+
+
+stages:
+    - build
+    - deploy
+    - test
+image: docker:20.10.5
+services:
+    - docker:20.10.5-dind
+builder:
+    stage: build
+    tags:
+        - linux
+    script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/hello:gitlab-$CI_COMMIT_SHORT_SHA .
+    except:
+        - main
+deployer:
+    stage: deploy
+    tags:
+        - linux
+    script:
+        - docker build -t $CI_REGISTRY/reocoker1985/restful-api/python-api:latest .
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push $CI_REGISTRY/reocoker1985/restful-api/python-api:latest
+    only:
+        - main
+test-image:
+    services:
+        - name: registry.gitlab.com/reocoker1985/restful-api:gitlab-9d1cf948
+          alias: py
+          command: ["python3", "python-api.py"]
+    image: python:3.7.2
+    script:
+        - curl http://127.0.0.1:5290/get_info
